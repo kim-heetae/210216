@@ -1,25 +1,29 @@
 package practice.com;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Practice2 {
 
 	int num;
 	int sum = 0 ;
-	String as;
+	boolean err = true;
 	void inputN() {
 		Scanner sc = new Scanner(System.in);
 		do {
-			num = sc.nextInt();
-			if (num != (Integer)num) {
-				System.out.println("정수를 입력해주세요.");
-			}
-			else
-			{
+			try {
+				System.out.println("계산하고 싶은 정수를 입력하세요.");
+				num = sc.nextInt();
 				break;
 			}
-		}while(true);
+			catch(InputMismatchException e) {
+				err = false;
+				System.out.println("정수를 입력해주세요.");
+				sc.nextLine();
+			}
+		}while(!err);
 	}
+	
 	void sum(int num) {
 		for(int i = 1; i <= num; i++) {
 			sum += i;
