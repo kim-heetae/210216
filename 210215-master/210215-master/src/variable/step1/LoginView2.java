@@ -25,7 +25,7 @@ public class LoginView2 extends JFrame implements ActionListener{//인터페이�
 		LoginView2 view = new LoginView2();
 		view.initDisplay();
 	}
-	@Override
+//	@Override
 	public void actionPerformed(ActionEvent e) {
 		//로그인 버튼을 눌렀니?
 		if(jbtn_login == e.getSource()){//이벤트 감지는 컴터가 하소 버튼의 주소번지는 내가 정의함.
