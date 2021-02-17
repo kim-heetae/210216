@@ -3,7 +3,7 @@ package practice.com;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Practice3 {//3의 배수 구하기
+public class ThreeMulti1_1 {//3의 배수 구하기
 
 	int lownum;//첫번째 입력값
 	int highnum;//두번째 입력값
@@ -39,7 +39,7 @@ public class Practice3 {//3의 배수 구하기
 		}while(!err);
 	}
 	public static void main(String[] args) {
-		Practice3 pr = new Practice3();
+		ThreeMulti1_1 pr = new ThreeMulti1_1();
 		pr.inputN();
 		pr.Multi3();
 	}

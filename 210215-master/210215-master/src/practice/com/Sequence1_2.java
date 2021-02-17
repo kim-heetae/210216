@@ -3,7 +3,7 @@ package practice.com;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Practice4_1 {//등비수열 변수사용
+public class Sequence1_2 {//등비수열 변수사용
 
 	int init = 1;//수열의 초기값은 1
 	int num;//입력받는 등비수열의 기준값
@@ -32,7 +32,7 @@ public class Practice4_1 {//등비수열 변수사용
 		}
 	}
 	public static void main(String[] args) {
-		Practice4_1 pr4_1 = new Practice4_1();
+		Sequence1_2 pr4_1 = new Sequence1_2();
 		pr4_1.inputN();
 		pr4_1.sequence();
 	}

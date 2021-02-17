@@ -3,7 +3,7 @@ package practice.com;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Practice2 {
+public class InputSum1_1 {
 
 	int num;
 	int sum = 0 ;
@@ -32,7 +32,7 @@ public class Practice2 {
 	}
 
 	public static void main(String[] args) {
-		Practice2 pr2 = new Practice2();
+		InputSum1_1 pr2 = new InputSum1_1();
 		pr2.inputN();
 		pr2.sum(pr2.num);
 	}

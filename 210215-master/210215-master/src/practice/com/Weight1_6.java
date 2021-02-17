@@ -6,7 +6,7 @@ package practice.com;
  */
 import java.util.Scanner;
 
-public class Practice1_5 {
+public class Weight1_6 {
 	
 	public static void main(String[] args) {
 		double wEarth = 0.0;//지구에서의 몸무게
@@ -19,7 +19,7 @@ public class Practice1_5 {
 		}
 		if(sc.hasNextDouble()) {//입력한 값이 더블인가?
 			double wMoon = 0.0;//달에서의 몸무게
-			Practice1_5 pr1_5 = new Practice1_5();
+			Weight1_6 pr1_5 = new Weight1_6();
 			Common cm = new Common();
 			wMoon = cm.moonWeight(wEarth);
 			System.out.println("지구의 몸무게 : " + wEarth + "kg");

@@ -6,7 +6,7 @@ import java.util.Scanner;
  * 1부터 n까지의 정수의 합계를 구하시오
  * 
  */
-public class Practice2_1 {
+public class InputSum1_2 {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);

@@ -3,7 +3,7 @@ package practice.com;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Practice1 {
+public class Weight1_1 {
 	boolean err = true;
 	double weight;
 	
@@ -29,7 +29,7 @@ public class Practice1 {
 		}while(!err);
 	}
 	public static void main(String[] args) {
-		Practice1 pr = new Practice1();
+		Weight1_1 pr = new Weight1_1();
 		pr.inputw();
 		pr.moon(pr.weight);
 	}
