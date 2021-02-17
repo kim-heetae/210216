@@ -8,7 +8,7 @@ public class Practice4 {//등비수열 배열사용
 	int[] seq = new int[7];//수열을 담을 배열
 	int num;//입력받는 등비수열의 기준값
 	boolean err = true;
-	void inputN() {
+	void inputN() {//입력받기
 		Scanner sc = new Scanner(System.in);
 		do {
 			try {//예외처리
@@ -23,7 +23,7 @@ public class Practice4 {//등비수열 배열사용
 			}
 		}while(!err);
 	}
-	void sequence() {
+	void sequence() {//수열 처리
 		for(int i = 0; i < 7; i++) {
 			if(i == 0) {
 				seq[i] = 1;//수열의 초기값은 1
