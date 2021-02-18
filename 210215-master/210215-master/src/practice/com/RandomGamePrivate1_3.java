@@ -48,7 +48,7 @@ class Gamemain{//게임이 진행되는 클래스
 
 class GameSetting{//초기 값들을 정해주는 클래스 (랜덤수의 범위, 답을 입력할 수 있는 횟수)
 	Gamemain gm = new Gamemain();
-	RandomGamePrivate1_3 rg3 = new RandomGamePrivate1_3();
+	//RandomGamePrivate1_3 rg3 = new RandomGamePrivate1_3();
 	Scanner sc = new Scanner(System.in);
 	int rangeN(int range2) {//초기 정답의 범위를 입력받는 메소드
 		System.out.println("랜덤으로 정답을 정할 최대값 정해주세요");
@@ -72,7 +72,7 @@ public class RandomGamePrivate1_3 {//메인 클래스
 		int rnum = 0;//랜덤번호
 		int num = 0;//입력받는 번호
 		int range = 0;//초기 정답의 범위
-		int chance = 0;
+		int chance = 0;//정답을 입력할 기회
 		GameSetting gs = new GameSetting();
 		Gamemain gm = new Gamemain();
 		range = gs.rangeN(range);//정답이 정해질 범위를 정해주는 메소드
