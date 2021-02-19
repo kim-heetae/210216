@@ -34,53 +34,65 @@ public class BaseballGame1_1 {//야구게임
 			i++;
 		}while(i < rnum.length);
 		
-//		for(int j = 0; j < rnum.length; j++) {
-//			System.out.println("테스트 " + rnum[j]);
-//			System.out.println(123/100);
-//			System.out.println(123%100);
-//		}
 	}
 	
 	void inputA() {
-		System.out.println("정답을 입력해 주세요");
-		int unum = sc.nextInt();
-		num[0] = unum / 100;
-		unum = unum % 100;
-		num[1] = unum / 10;
-		unum = unum % 10;
-		num[2] = unum;
+		if(strike == 3) {
+			return;
+		}
+		else {
+			System.out.println("정답을 입력해 주세요");
+			int unum = sc.nextInt();
+			num[0] = unum / 100;
+			unum = unum % 100;
+			num[1] = unum / 10;
+			unum = unum % 10;
+			num[2] = unum;
+			checkN();
+		}
 	}
 	
 	void checkN() {
+		strike = 0;
+		ball = 0;
 		for(int i = 0; i < rnum.length; i++) {
 			if(rnum[i] == num[i]) {
 				strike += 1;
 			}
+			if(strike == 3) {
+				System.out.println("정답입니다.");
+				return;
+			}
 		}
 		for(int i = 0; i < rnum.length; i++) {
 			for(int j = 0; j < num.length; j++) {
-				if(i == j) {
-					return;
-				}
-				else if((i != j) && (rnum[i] == num[j])) {
+				if((i != j) && (rnum[i] == num[j])) {
 					ball += 1;
 				}
 			}
 		}
-		for(int i = 0; i < rnum.length; i++) {
-			for(int j = 0; j < num.length; j++) {
-				if(strike == 0 && ball == 0) {
-					System.out.println("아웃");
-				}
+		if(strike == 0 && ball == 0) {
+			out += 1;
+		}
+		System.out.println(out + "아웃");
+		System.out.println("strike : " + strike + "      /      " + "ball : " + ball );
+		if(out < 3) {
+			inputA();
+		}
+		else {
+			System.out.println("실패입니다.");
+			if(rnum[0] == 0) {
+				System.out.println("정답 : 0" + rnum[1] + rnum[2]);				
+			}
+			else {
+			System.out.println("정답 : " + rnum[0] + rnum[1] + rnum[2]);
 			}
 		}
-		System.out.println(strike + "strike" + ball + "ball");
 	}
 	public static void main(String[] args) {
 		BaseballGame1_1 bg = new BaseballGame1_1();
-		//bg.randomN();
+		bg.randomN();
 		bg.inputA();
-		bg.checkN();
 	}
 
 }
