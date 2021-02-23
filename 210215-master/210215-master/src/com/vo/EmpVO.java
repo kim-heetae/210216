@@ -6,7 +6,7 @@ public class EmpVO {
 	}
 	public void setdVO(DeptVO dVO) {
 		this.dVO = dVO;
-	}
+	}//
 	//insert here - 급여명세서에 부서이름을 출력하기 위한 SELECT문을 가지고 결정해보세요
 	private DeptVO 	dVO 		= null;
 	private int 	empno    	= 0;//7566 
