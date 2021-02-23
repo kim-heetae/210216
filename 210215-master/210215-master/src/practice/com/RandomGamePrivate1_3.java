@@ -55,6 +55,7 @@ class GameSetting{//초기 값들을 정해주는 클래스 (랜덤수의 범위
 		range2 = sc.nextInt();
 		return range2;
 	}
+	int i = 0;
 	int chanceN(int chance) {//기회를 입력받는 메소드
 		System.out.println("정답을 입력할 기회를 정해주세요");
 		chance = sc.nextInt();

@@ -77,7 +77,9 @@ public class RandomGamePrivate1_4 {//메인 클래스
 		RandomGamePrivate1_4 rg = new RandomGamePrivate1_4();
 		GameSetting2 gs = new GameSetting2();
 		Gamemain2 gm = new Gamemain2();
-		rg.range = gs.rangeN(rg.range);//정답이 정해질 범위를 정해주는 메소드
+		int i =1 ;
+		int j= 0;
+		i = gs.rangeN(j);//정답이 정해질 범위를 정해주는 메소드
 		rg.chance = gs.chanceN(rg.chance);//기회를 정할 메소드
 		rg.rnum = gs.rdnum(rg.rnum, rg.range);//랜덤수를 생성
 		gm.inputN(rg.rnum, rg.num, rg.chance, rg.range);//정답 입력

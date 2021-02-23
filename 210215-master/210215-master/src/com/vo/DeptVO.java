@@ -28,6 +28,7 @@ public class DeptVO {
 	private int 	deptno 	= 0;//원시형 타입 - 부르면 값이 나온다. 4byte이니까 0, 4, 8, 12번지... 이런식을 증가.
 	private String 	dname 	= null;//레퍼런스 타입 - 클래스 급 - 값이 아닌 주소번지가 나온다.
 	private String 	loc		= null;
+	private EmpVO	eVO		= null;
 	//getter메소드 - Read
 	public int getDeptno() {
 		return deptno;
