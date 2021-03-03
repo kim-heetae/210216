@@ -72,6 +72,7 @@ public class NoProcEmpUpdate1 extends JFrame {
 			pstmt3.setDouble(1, r_sal * v_rate);
 			pstmt3.setInt(2, p_empno);
 			result = pstmt3.executeUpdate();
+			con3.setAutoCommit(false);
 			System.out.println("result : " + result);
 			if(result == 1) {
 				JOptionPane.showMessageDialog(this, "수정이 되었습니다");
@@ -79,7 +80,6 @@ public class NoProcEmpUpdate1 extends JFrame {
 			else {
 				JOptionPane.showMessageDialog(this, "실패하였습니다");
 			}
-			con3.setAutoCommit(false);
 			dbMgr.freeConnection(con3, pstmt3);
 		} catch (SQLException se) {
 			System.out.println("[[sql1]]" + sql1);
