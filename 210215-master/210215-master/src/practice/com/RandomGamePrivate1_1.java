@@ -5,15 +5,15 @@ import java.util.Scanner;
 
 public class RandomGamePrivate1_1 {
 
-	int rnum;
-	int num;
+	static int rnum;
+	static int num;
 	int rdnum() {
 		Scanner sc = new Scanner(System.in);
 		Random r = new Random();
 		rnum = r.nextInt(5) + 1;
 		return rnum;
 	}
-	void inputN() {
+	static void inputN() {
 		Scanner sc = new Scanner(System.in);
 		for(int i = 0; i <= 3; i++) {
 			if(i < 3) {

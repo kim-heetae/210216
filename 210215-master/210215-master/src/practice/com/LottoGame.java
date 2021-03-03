@@ -26,6 +26,22 @@ class Lotto{
 		return lotto;
 	}
 }
+class ChlottoN{
+	int[] changeL(int[] lotto){
+		int min;
+		for(int i = 0; i < lotto.length; i++) {
+			for(int j = (i + 1); j < lotto.length; j++) {
+				if(lotto[i] >= lotto[j]) {
+					min = lotto[i];
+					lotto[i] = lotto[j];
+					lotto[j] = min;
+				}
+			}
+		}
+		return lotto;
+	}
+}
+
 
 class PrintLotto{
 	void print(int[] lotto){
@@ -43,7 +59,9 @@ public class LottoGame {
 		LottoGame lg = new LottoGame();
 		Lotto r = new Lotto();
 		PrintLotto pl = new PrintLotto();
+		ChlottoN chl = new ChlottoN();
 		lg.lotto = r.rnum(lg.lotto);
+		lg.lotto = chl.changeL(lg.lotto);
 		pl.print(lg.lotto);
 		
 	}

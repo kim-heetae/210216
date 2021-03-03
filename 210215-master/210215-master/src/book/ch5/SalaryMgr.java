@@ -68,7 +68,7 @@ public class SalaryMgr implements ActionListener{
 		jf_sal.add("North", jp_north);
 		jf_sal.add("Center", jsp_sal);
 		jf_sal.setTitle("급여 명세서");
-		jf_sal.setSize(800, 600);
+		jf_sal.setSize(400, 300);
 		jf_sal.setVisible(true);
 
 	}
@@ -76,6 +76,14 @@ public class SalaryMgr implements ActionListener{
 	//main
 	public static void main(String[] args) {
 		new SalaryMgr();
+	}
+	public void getEmpDetail(int empno) {
+		System.out.println("조회버튼 이벤트 감지됨");
+		EmpVO eVO 	= new EmpVO();//94~98번 중요 - 복습
+		eVO.setEname("이순신");
+		DeptVO dVO 	= new DeptVO();
+		dVO.setDname("개발1팀");
+		eVO.setdVO(dVO);//issue
 	}
 
 	@Override
@@ -114,21 +122,6 @@ public class SalaryMgr implements ActionListener{
 			}
 			
 		}
-//		else if("삭제".equals(command)) {
-//			System.out.println("삭제버튼 감지됨");
-//			EmpVO eVO 	= new EmpVO();
-//			DeptVO dVO 	= new DeptVO();
-//			Vector oneRow = new Vector();
-////			oneRow.addElement(eVO.getEname());
-////			oneRow.addElement(eVO.getdVO().getDname());
-//			oneRow.lastElement();
-//			for(int r = 0; r < data.length; r++) {
-////				for(int c = 0; c < 2; c++) {
-//				dtm_sal.setValueAt(eVO.getEname(), r, 0);
-//				dtm_sal.setValueAt(eVO.getdVO().getDname(), r, 1);
-////				}
-//			}
-//		}
 	}
 
 }

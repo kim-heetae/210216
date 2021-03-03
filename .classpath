@@ -3,5 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="210215-master/210215-master/src"/>
 	<classpathentry kind="lib" path="C:/workspace80/gson-2.8.6.jar"/>
+	<classpathentry kind="lib" path="C:/app/User/product/11.1.0/db_1/jdbc/lib/ojdbc6.jar"/>
 	<classpathentry kind="output" path="210215-master/210215-master/bin"/>
 </classpath>
