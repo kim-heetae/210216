@@ -90,8 +90,7 @@ public class AddressDialog10 extends JDialog implements ActionListener {
 		String command = ae.getActionCommand();
 		if("처리".equals(command)) {
 			if("입력".equals(this.getTitle())) {
-				
-			System.out.println("입력 조회버튼 감지됨");
+				System.out.println("입력 조회버튼 감지됨");
 			}
 //			System.out.println("조회버튼 감지됨");
 			//입력 혹은 수정처리
@@ -100,7 +99,7 @@ public class AddressDialog10 extends JDialog implements ActionListener {
 		else if ("닫기".equals(command)) {
 			//닫기 버튼을 누르면 자바가상머신과의 연결고리를 끊어서 강제 종료시킴.
 			System.out.println("종료버튼 이벤트 감지됨.");
-			System.exit(0);
+			this.dispose();
 		}
 	}
 }

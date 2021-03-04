@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class DBConnectionMgr {
 	private final static String _DRIVER = "oracle.jdbc.driver.OracleDriver";
-	private final static String _URL 	= "jdbc:oracle:thin:@192.168.0.27:1521:orcl11";
+	private final static String _URL 	= "jdbc:oracle:thin:@192.168.0.24:1521:orcl11";
 	private final static String _USER 	= "scott";
 	private final static String _PW 	= "tiger";
 	static DBConnectionMgr dbMgr = null;

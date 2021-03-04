@@ -6,9 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Vector;
-
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -131,7 +129,7 @@ public class AddressBook2 implements ActionListener{
 				//부적합한 식별자 입니다.
 				System.out.println("SQLExcption : " + se.getMessage());//좀 더 구체적인 예외처리 클래스 정보를 알수 있다.			
 			}
-//////////////////////////////////////////[[조회결과 처리]]////////////////////////////////////////
+//////////////////////////////////////////[[조회결과 처리 끝]]////////////////////////////////////////
 		}
 		else if(jmi_dbTest == obj) {
 			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
@@ -146,16 +144,130 @@ public class AddressBook2 implements ActionListener{
 			}
 		}
 		else if(jmi_ins == obj) {
-			aDia.set("입력", null, aBook);
+			/*
+			 * @param1 은 AddressDialog에 출력되는 제목글자를 바꿔줄려고
+			 * @param2 은 AddressBook에서 조회된 결과를 AddressDialog에서 재사용해야 할 경우 필요한데
+			 * @param3 은 AddressDialog에서 입력이 성공하거나 수정에 성공하면 부모창을 새로고침 해주여야 한다고 담당자가 요청한 상태
+			 * @param4 은 AddressDialog 화면에서 사용자로부터 입력받는 JTextField들에 대해 상태값을 반영해 주어야 할것 같아요
+			 */
+			aDia.set("입력", null, aBook, true);
 			aDia.setVisible(true);
 		}
 		else if(jmi_sel == obj) {
-			aDia.set("상세조회", dVO, aBook);
-			aDia.setTitle("상세조회");
-			aDia.setVisible(true);
+			//한건을 먼저 선택하세요 - deptno
+			int index[] = jtb_dept.getSelectedRows();
+			//테이블의 데이터를 선택하지 않은경우
+			if(index.length == 0) {
+				JOptionPane.showMessageDialog(jf, "조회할 데이터를 선택하세요","Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			//선택된 로우가 한개 이상인 경우
+			else if(index.length > 1) {
+				JOptionPane.showMessageDialog(jf, "데이터를 한건만 선택하세요","Error", JOptionPane.INFORMATION_MESSAGE);
+				return;				
+			}
+			//그 나머지
+			else {
+				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[0], 0).toString());
+				
+				DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+				Connection 			con 	= null;
+				PreparedStatement 	pstmt 	= null;
+				ResultSet 			rs 		= null;
+				String sql = "SELECT deptno, dname, loc FROM dept";
+						sql += " WHERE deptno = ?";
+				DeptVO dVO = null;
+				try {
+					//연결통로확보하기
+					System.out.println("con before");
+					con = dbMgr.getConnection();
+					//오라클 서버에 select문을 전달할 전령객체 생성
+					System.out.println("pstmt before");
+					pstmt = con.prepareStatement(sql);
+					//?자리에 값을 치환하기 - 사용자가 선택한 로우의 부서번호
+					pstmt.setInt(1, deptno);
+					System.out.println("pstmt after");
+					//오라클에 살고있는 커서 조작을 위해서 자바가 제공하는 객체 생성
+					System.out.println("rs before");
+					rs = pstmt.executeQuery();
+					if(rs.next()) {
+						dVO = new DeptVO();
+						dVO.setDeptno(rs.getInt("deptno"));
+						dVO.setDname(rs.getString("dname"));
+						dVO.setLoc(rs.getString("loc"));
+					}
+					else {
+						dVO = new DeptVO(); //NullPointerException 을 피하기 위해
+					}
+					//오라클 서버와 연동하여 사용자가 선택한 한 개 로우만 가져온다
+					
+					aDia.set("상세조회", dVO, aBook, false);
+					aDia.setTitle("상세조회");
+					aDia.setVisible(true);
+				}catch(Exception e) {
+					JOptionPane.showInternalMessageDialog(jf, "Exception : " + e.toString());
+				}
+			}
 		}
 		else if(jmi_upd == obj) {
-			aDia.set("수정", dVO, aBook);
+			/////////////////////////////////////////////////////////////
+			//한건을 먼저 선택하세요 - deptno
+			int index[] = jtb_dept.getSelectedRows();
+			//테이블의 데이터를 선택하지 않은경우
+			if(index.length == 0) {
+				JOptionPane.showMessageDialog(jf, "수정할 데이터를 선택하세요","Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			//선택된 로우가 한개 이상인 경우
+			else if(index.length > 1) {
+				JOptionPane.showMessageDialog(jf, "수정은 한번에 한건의 데이터만 가능합니다.","Error", JOptionPane.INFORMATION_MESSAGE);
+				return;				
+			}
+			//그 나머지
+			else {
+				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[0], 0).toString());
+				
+				DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+				Connection 			con 	= null;
+				PreparedStatement 	pstmt 	= null;
+				ResultSet 			rs 		= null;
+				String 	sql = "SELECT deptno, dname, loc FROM dept";
+						sql += " WHERE deptno = ?";
+				DeptVO 	dVO = null;
+				try {
+					//연결통로확보하기
+					System.out.println("con before");
+					con = dbMgr.getConnection();
+					//오라클 서버에 select문을 전달할 전령객체 생성
+					System.out.println("pstmt before");
+					pstmt = con.prepareStatement(sql);
+					//?자리에 값을 치환하기 - 사용자가 선택한 로우의 부서번호
+					pstmt.setInt(1, deptno);
+					System.out.println("pstmt after");
+					//오라클에 살고있는 커서 조작을 위해서 자바가 제공하는 객체 생성
+					System.out.println("rs before");
+					rs = pstmt.executeQuery();
+					if(rs.next()) {
+						dVO = new DeptVO();
+						dVO.setDeptno(rs.getInt("deptno"));
+						dVO.setDname(rs.getString("dname"));
+						dVO.setLoc(rs.getString("loc"));
+					}
+					else {
+						dVO = new DeptVO(); //NullPointerException 을 피하기 위해
+					}
+					//오라클 서버와 연동하여 사용자가 선택한 한 개 로우만 가져온다
+					
+					aDia.set("수정", dVO, aBook, true);
+					aDia.setTitle("수정");
+					aDia.setVisible(true);
+				}catch(Exception e) {
+					JOptionPane.showInternalMessageDialog(jf, "Exception : " + e.toString());
+				}
+			}
+			
+			/////////////////////////////////////////////////////////////
+			aDia.set("수정", dVO, aBook, true);
 			aDia.setTitle("수정");
 			aDia.setVisible(true);
 		}
