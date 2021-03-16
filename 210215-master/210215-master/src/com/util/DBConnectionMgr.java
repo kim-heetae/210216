@@ -8,11 +8,15 @@ import java.sql.SQLException;
 
 public class DBConnectionMgr {
 	private final static String _DRIVER = "oracle.jdbc.driver.OracleDriver";
-	private final static String _URL 	= "jdbc:oracle:thin:@192.168.0.24:1521:orcl11";
+	private final static String _URL 	= "jdbc:oracle:thin:@localhost:1521:orcl11";
 	private final static String _USER 	= "scott";
 	private final static String _PW 	= "tiger";
-	static DBConnectionMgr dbMgr = null;
+	private static DBConnectionMgr dbMgr = null;
+	//이른 인스턴스화 eager
+	private static DBConnectionMgr dbMgr2 = new DBConnectionMgr();
 	Connection con = null;
+	private DBConnectionMgr() {} //생성자
+	//게으른 인스턴스화 - 선언과 생성이 따로 쓰여졌을때(진행될때)
 	public static DBConnectionMgr getInstance() {
 		if(dbMgr == null) {
 			dbMgr = new DBConnectionMgr();
@@ -23,6 +27,12 @@ public class DBConnectionMgr {
 		try {
 			Class.forName(_DRIVER);
 			con = DriverManager.getConnection(_URL, _USER, _PW);
+			/* 트랜잭션 처리
+			con.setAutoCommit(true);
+			con.setAutoCommit(false);			
+			con.commit();
+			con.rollback();
+			*/
 		} catch (ClassNotFoundException ce) {
 			System.out.println("드라이버 클래스를 찾을수 없습니다.");
 		} catch (SQLException se) {

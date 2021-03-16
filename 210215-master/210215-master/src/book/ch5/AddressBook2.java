@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -15,14 +16,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
 import com.util.DBConnectionMgr;
 import com.vo.DeptVO;
 import com.vo.EmpVO;
+import network.step1.TimeClient;
 
 public class AddressBook2 implements ActionListener{
 	//선언부
 	JFrame 		jf 		= null;
+//	TimeClient tc = new TimeClient();
+	JLabel		jlb_timer	= new JLabel("현재시간");
 	JMenuBar 	jbm 	= new JMenuBar();
 	JMenu		jm_file = new JMenu("File");
 	JMenu		jm_oracle = new JMenu("DB연동");
@@ -47,9 +50,68 @@ public class AddressBook2 implements ActionListener{
 	public AddressBook2() {
 //		initDisplay();
 	}
+//	public AddressBook2() {
+////		initDisplay();
+//	}
+	public void settimer(String timerstr) {
+		this.jlb_timer.setText(timerstr);
+	}
 	//주소 목록 조회 - 새로고침 처리
 	public void refresh() {
 		System.out.println("refresh 호출 성공");
+		////////////////////////////////////[[ 전체조회 하기 소스 추가]]////////////////////////////////////////////////
+		DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+		Connection 			con 	= null;
+		PreparedStatement 	pstmt 	= null;
+		ResultSet 			rs 		= null;
+		String sql = "SELECT deptno, dname, loc FROM dept ORDER BY deptno";
+		//dbMgr = new DBConnectionMgr();
+		DeptVO dVOS[] = null;
+		try {
+			
+			//연결통로확보하기
+			System.out.println("con before");
+			con = dbMgr.getConnection();
+			//오라클 서버에 select문을 전달할 전령객체 생성
+			System.out.println("pstmt before");
+			pstmt = con.prepareStatement(sql);
+			System.out.println("pstmt after");
+			//오라클에 살고있는 커서 조작을 위해서 자바가 제공하는 객체 생성
+			System.out.println("rs before");
+			rs = pstmt.executeQuery();
+			System.out.println("rs after");
+			dVO = null;
+			Vector<DeptVO> al = new Vector<DeptVO>();
+			while(rs.next()) {
+				dVO = new DeptVO();
+				dVO.setDeptno(rs.getInt("deptno"));
+				dVO.setDname(rs.getString("dname"));
+				dVO.setLoc(rs.getString("loc"));
+				al.add(dVO);
+			}
+			System.out.println("al.size() : " + al.size());
+			dVOS = new DeptVO[al.size()];
+			//벡터에 담긴 정보를 꺼내서 객체 배열에 초기화 하기
+			al.copyInto(dVOS);
+			while(dtm_dept.getRowCount()>0) {
+	               dtm_dept.removeRow(0);
+            }
+
+			for(int i = 0; i < dVOS.length; i++) {
+				Vector oneRow = new Vector();
+				oneRow.add(dVOS[i].getDeptno());
+				oneRow.add(dVOS[i].getDname());
+				oneRow.add(dVOS[i].getLoc());
+				dtm_dept.addRow(oneRow);
+			}
+		}catch(SQLException se) {
+			//부적합한 식별자 입니다.
+			System.out.println("SQLExcption : " + se.getMessage());//좀 더 구체적인 예외처리 클래스 정보를 알수 있다.			
+		}
+//////////////////////////////////////////[[조회결과 처리 끝]]////////////////////////////////////////
+		
+		
+		////////////////////////////////////[[ 전체조회 하기 소스 종료]]////////////////////////////////////////////////
 	}
 	//화면처리부
 	public void initDisplay() {
@@ -62,6 +124,7 @@ public class AddressBook2 implements ActionListener{
 		jmi_del.addActionListener(this);
 		jmi_dbTest.addActionListener(this);
 		jmi_exit.addActionListener(this);
+		jlb_timer.setHorizontalAlignment(JLabel.CENTER);
 		jm_file.add(jmi_selALL);
 		jm_file.add(jmi_sel);
 		jm_file.add(jmi_ins);
@@ -74,8 +137,12 @@ public class AddressBook2 implements ActionListener{
 		jf.setJMenuBar(jbm);
 		jf.setTitle("주소록 - Ver1.0");
 		jf.add("Center", jsp_dept);
+		jf.add("South", jlb_timer);
+		Thread	th	= new TimeClient(jlb_timer);//이른인스턴스화 - 컴파일 순서
+		th.start();//run메소드 호출 해줌
 		jf.setSize(500, 400);
 		jf.setVisible(true);
+		
 	}
 	public static void main(String[] args) {
 		aBook = new AddressBook2();
@@ -85,51 +152,7 @@ public class AddressBook2 implements ActionListener{
 	public void actionPerformed(ActionEvent ae) {
 		Object obj = ae.getSource();//버튼의 주소번지를 출력함
 		if(jmi_selALL == obj) {
-			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
-			Connection 			con 	= null;
-			PreparedStatement 	pstmt 	= null;
-			ResultSet 			rs 		= null;
-/////////////////////////////////[[조회결과 처리]]///////////////////////////////////////////
-			String sql = "SELECT deptno, dname, loc FROM dept";
-			dbMgr = new DBConnectionMgr();
-			DeptVO dVOS[] = null;
-			try {
-				//연결통로확보하기
-				System.out.println("con before");
-				con = dbMgr.getConnection();
-				//오라클 서버에 select문을 전달할 전령객체 생성
-				System.out.println("pstmt before");
-				pstmt = con.prepareStatement(sql);
-				System.out.println("pstmt after");
-				//오라클에 살고있는 커서 조작을 위해서 자바가 제공하는 객체 생성
-				System.out.println("rs before");
-				rs = pstmt.executeQuery();
-				System.out.println("rs after");
-				dVO = null;
-				Vector<DeptVO> al = new Vector<DeptVO>();
-				while(rs.next()) {
-					dVO = new DeptVO();
-					dVO.setDeptno(rs.getInt("deptno"));
-					dVO.setDname(rs.getString("dname"));
-					dVO.setLoc(rs.getString("loc"));
-					al.add(dVO);
-				}
-				System.out.println("al.size() : " + al.size());
-				dVOS = new DeptVO[al.size()];
-				//벡터에 담긴 정보를 꺼내서 객체 배열에 초기화 하기
-				al.copyInto(dVOS);
-				for(int i = 0; i < dVOS.length; i++) {
-					Vector oneRow = new Vector();
-					oneRow.add(dVOS[i].getDeptno());
-					oneRow.add(dVOS[i].getDname());
-					oneRow.add(dVOS[i].getLoc());
-					dtm_dept.addRow(oneRow);
-				}
-			}catch(SQLException se) {
-				//부적합한 식별자 입니다.
-				System.out.println("SQLExcption : " + se.getMessage());//좀 더 구체적인 예외처리 클래스 정보를 알수 있다.			
-			}
-//////////////////////////////////////////[[조회결과 처리 끝]]////////////////////////////////////////
+			refresh();
 		}
 		else if(jmi_dbTest == obj) {
 			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
@@ -169,7 +192,6 @@ public class AddressBook2 implements ActionListener{
 			//그 나머지
 			else {
 				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[0], 0).toString());
-				
 				DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 				Connection 			con 	= null;
 				PreparedStatement 	pstmt 	= null;
@@ -201,8 +223,8 @@ public class AddressBook2 implements ActionListener{
 					}
 					//오라클 서버와 연동하여 사용자가 선택한 한 개 로우만 가져온다
 					
-					aDia.set("상세조회", dVO, aBook, false);
-					aDia.setTitle("상세조회");
+				 	aDia.set("상세조회", dVO, aBook, false);
+					//aDia.setTitle("상세조회");
 					aDia.setVisible(true);
 				}catch(Exception e) {
 					JOptionPane.showInternalMessageDialog(jf, "Exception : " + e.toString());
@@ -267,9 +289,9 @@ public class AddressBook2 implements ActionListener{
 			}
 			
 			/////////////////////////////////////////////////////////////
-			aDia.set("수정", dVO, aBook, true);
-			aDia.setTitle("수정");
-			aDia.setVisible(true);
+//			aDia.set("수정", dVO, aBook, true);
+//			aDia.setTitle("수정");
+//			aDia.setVisible(true);
 		}
 		else if(jmi_exit == obj) {
 			System.out.println("종료버튼 이벤트 감지됨.");

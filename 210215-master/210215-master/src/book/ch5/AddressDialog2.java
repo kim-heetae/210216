@@ -3,17 +3,35 @@ package book.ch5;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import com.util.DBConnectionMgr;
 import com.vo.DeptVO;
 
 public class AddressDialog2 extends JDialog implements ActionListener {
+	static DBConnectionMgr 	dbMgr 	= null;
+	Connection 				con 	= null;
+	PreparedStatement 		ipstmt 	= null;
+	PreparedStatement 		upstmt 	= null;
+	/*
+	 * INSERT INTO dept VALUES(51, '개발팀', '포항')
+	 */
+	StringBuffer 	sql_ins2 		= new StringBuffer();//멀티스레드에 안전. 속도가 느리다
+	StringBuilder 	sql_ins 		= new StringBuilder();//싱글스레드에 안전. 속조가 빠름(경합이 없기때문)
+	/*
+	 * UPDATE DEPT SET LOC = '인천' WHERE DEPTNO = 51
+	 */
+	StringBuilder 	sql_upd 		= new StringBuilder();
 	JScrollPane 	jsp 			= null;
 	JPanel 			jp_center 		= new JPanel();
 	JPanel 			jp_south 		= new JPanel();
@@ -30,6 +48,14 @@ public class AddressDialog2 extends JDialog implements ActionListener {
 	static AddressBook2 aBook 		= null;
 	
 	public AddressDialog2() {
+		dbMgr = DBConnectionMgr.getInstance();
+		try {
+			con = dbMgr.getConnection();
+			//자동 커밋모드를 켜둘때와 꺼둘때 - 디폴트는 true상태
+			con.setAutoCommit(false);
+		}catch(Exception e){
+			System.out.println(e.toString());
+		}
 		initDisplay();
 	}
 	//화면처리부
@@ -55,7 +81,7 @@ public class AddressDialog2 extends JDialog implements ActionListener {
 	    jp_south.add(jbtn_close);
 	    this.add("Center", jsp);
 	    this.add("South",jp_south);
-	    this.setTitle("입력");
+	    this.setTitle("");
 	    this.setSize(400, 500);
 	    this.setVisible(false);
 	}
@@ -144,27 +170,63 @@ public class AddressDialog2 extends JDialog implements ActionListener {
 				pdVO.setDeptno(Integer.parseInt(getJtf_deptno()));//NumberFormatException이 발생 가능
 				pdVO.setDname(getJtf_dname());
 				pdVO.setLoc(getJtf_loc());
+				sql_ins.append("INSERT INTO dept");
+				sql_ins.append(" VALUES(?, ?, ?)");
+				try {
+					ipstmt = con.prepareStatement(sql_ins.toString());
+					int i = 0;//물음표 갯수만큼 필요하기때문
+					ipstmt.setInt(++i, pdVO.getDeptno());
+					ipstmt.setString(++i, pdVO.getDname());
+					ipstmt.setString(++i, pdVO.getLoc());
+					int iresult = ipstmt.executeUpdate();
+					if(iresult == 1) {
+						JOptionPane.showMessageDialog(aBook.jf, "등록하였습니다.");
+					}
+					dbMgr.freeConnection(con, ipstmt);
+//					dbMgr = DBConnectionMgr.getInstance();
+//					con = dbMgr.getConnection();
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(aBook.jf, "Exception" + e2.toString());
+				}
 			}
 			else {//수정일때
 				DeptVO pdVO = new DeptVO();
+//				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[0], 0).toString());
 				pdVO.setDeptno(Integer.parseInt(getJtf_deptno()));//NumberFormatException이 발생 가능
 				pdVO.setDname(getJtf_dname());
-				pdVO.setLoc(getJtf_loc());				
+				pdVO.setLoc(getJtf_loc());
+				sql_upd.append("UPDATE DEPT");
+				sql_upd.append(" SET LOC = ?");
+				sql_upd.append(" WHERE DEPTNO = ?");
+				try {
+					upstmt = con.prepareStatement(sql_upd.toString());
+					int u = 0;
+					upstmt.setString(++u, pdVO.getLoc());					
+					upstmt.setInt(++u, pdVO.getDeptno());
+					int uresult = upstmt.executeUpdate();
+					if(uresult == 1) {
+						JOptionPane.showMessageDialog(aBook.jf, "수정성공");						
+					}
+					dbMgr.freeConnection(con, upstmt);
+				} catch (Exception e2) {					
+					JOptionPane.showMessageDialog(aBook.jf, "Exception" + e2.toString());
+				}
 			}
 			aBook.refresh();
-		}
+			setVisible(false);
+		}////////////end of 처리
 		else if ("닫기".equals(command)) {
 			//닫기 버튼을 누르면 자바가상머신과의 연결고리를 끊어서 강제 종료시킴.
 			this.dispose();
 		}
 	}
-	/*
-	public static void main(String[] args) {
-		AddressDialog2 ad2 = new AddressDialog2();
-		ad2.set("상세조회", ad2.dVO, aBook, false);
-		ad2.initDisplay();
-		ad2.setVisible(true);
-//		ad2.setTitle("수정");
-	}
-	*/
+	
+//	public static void main(String[] args) {
+//		AddressDialog2 ad2 = new AddressDialog2();
+////		ad2.set("상세조회", ad2.dVO, aBook, false);
+//		ad2.initDisplay();
+//		ad2.setVisible(true);
+////		ad2.setTitle("수정");
+//	}
+	
 }

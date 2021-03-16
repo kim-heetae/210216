@@ -93,7 +93,7 @@ public class AddressBook10 implements ActionListener{
 			ResultSet 			rs 		= null;
 /////////////////////////////////[[조회결과 처리]]///////////////////////////////////////////
 			String sql = "SELECT deptno, dname, loc FROM dept";
-			dbMgr = new DBConnectionMgr();
+			//dbMgr = new DBConnectionMgr();
 			DeptVO dVOS[] = null;
 			try {
 				//연결통로확보하기

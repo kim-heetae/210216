@@ -27,7 +27,7 @@ public class JdbcTest3 {
 	//생성자
 	public JdbcTest3() {
 		String sql = "SELECT empno, ename, sal FROM emp";
-		dbMgr = new DBConnectionMgr();
+		//dbMgr = new DBConnectionMgr();
 		try {
 			//연결통로확보하기
 			con = dbMgr.getConnection();
