@@ -1,7 +1,10 @@
 package semi.projects;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop.Action;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -9,25 +12,32 @@ import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-public class LoginView implements ActionListener, KeyListener{
-	JFrame 		jf 			= new JFrame();
-	JPanel 		jp_south 	= new JPanel();
+
+public class CusLoginView implements ActionListener, KeyListener{
+	JFrame 		jf 			= new JFrame();	
+	JPanel 		jp_south 	= new JPanel();	
+	JPanel 		jp_south1 	= new JPanel();	
+	JPanel 		jp_south2 	= new JPanel();	
 	JPanel 		jp_center	= new JPanel();
 	JLabel 		jlb_id 		= new JLabel("ID");
 	JTextField 	jtf_id 		= new JTextField();
 	JLabel 		jlb_pw 		= new JLabel("PW");
 	JPasswordField jpf_pw	= new JPasswordField();
-	JButton 	jbtn_back 	= new JButton("이전");
-	JButton 	jbtn_login 	= new JButton("로그인");
-	JButton 	jbtn_exit 	= new JButton("닫기");
+	JButton 	jbtn_back 	= new JButton("이전");  	
+	JButton 	jbtn_login 	= new JButton("로그인"); 	
+	JButton 	jbtn_exit 	= new JButton("닫기");  	
+	JButton 	jbtn_join 	= new JButton("회원가입");  	
 //	JScrollPane jsp_center 	= new JScrollPane(jp_center);
 //	JScrollPane jsp_south 	= new JScrollPane(jp_south);
 	Font		font		= new Font(null, 0, 20);
@@ -40,7 +50,7 @@ public class LoginView implements ActionListener, KeyListener{
 //	MgrView mv = new MgrView();
 	MgrView mv = null;
 	
-	public LoginView() {
+	public CusLoginView() {
 		initDisplay();
 	}
 	
@@ -49,18 +59,26 @@ public class LoginView implements ActionListener, KeyListener{
 		jbtn_login.addActionListener(this);
 		jbtn_exit.addActionListener(this);
 		jtf_id.addKeyListener(this);
+		jtf_id.setFocusTraversalKeysEnabled(false);
+		jpf_pw.setFocusTraversalKeysEnabled(false);
 		jpf_pw.addKeyListener(this);
-		jlb_id.setBounds(120, 70, 150, 25);
-		jtf_id.setBounds(200, 70, 150, 25);
-		jlb_pw.setBounds(120, 120, 150, 25);
-		jpf_pw.setBounds(200,120, 150, 25);
+		jlb_id.setBounds(100, 70, 150, 25);
+		jtf_id.setBounds(150, 70, 150, 25);
+		jlb_pw.setBounds(100, 120, 150, 25);
+		jpf_pw.setBounds(150,120, 150, 25);
+		jbtn_login.setBounds(315, 70, 80, 75);
+//		jp_south1.setBackground(Color.orange);
+		jp_south.setLayout(new GridLayout(2,1));
+		jp_south.add(jp_south1);
+		jp_south.add(jp_south2);
 		jp_center.add(jlb_id);
 		jp_center.add(jtf_id);
 		jp_center.add(jlb_pw);
 		jp_center.add(jpf_pw);
-		jp_south.add(jbtn_back);
-		jp_south.add(jbtn_login);
-		jp_south.add(jbtn_exit);
+		jp_center.add(jbtn_login);
+		jp_south2.add(jbtn_back);
+		jp_south2.add(jbtn_join);
+		jp_south2.add(jbtn_exit);
 		jf.add("Center", jp_center);
 		jf.add("South", jp_south);
 		jp_center.setLayout(new BorderLayout());
@@ -69,14 +87,14 @@ public class LoginView implements ActionListener, KeyListener{
 		jf.setVisible(true);
 	}
 	public static void main(String[] args) {
-		new LoginView();
+		new CusLoginView();		
 	}
 	public void login() {
 		String 	id = jtf_id.getText();
 		String 	pw = jpf_pw.getText();		
-		String 	sql = "SELECT id, pw FROM login";
-				sql += " WHERE id = ?";
-				sql += " AND PW = ?";
+		String 	sql = "SELECT mem_id, mem_pw FROM custbl";
+				sql += " WHERE mem_id = ?";
+				sql += " AND mem_PW = ?";
 		try {
 			dbMgr = DBConnectionMgr.getInstance();
 			con = dbMgr.getConnection();
@@ -117,8 +135,15 @@ public class LoginView implements ActionListener, KeyListener{
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
+		Object obj = e.getSource();
 		if (e.getKeyCode()==KeyEvent.VK_ENTER){
 			login();
+		}
+		else if(obj == jtf_id && e.getKeyCode() == KeyEvent.VK_TAB) {
+			jpf_pw.grabFocus();
+		}
+		else if(obj == jpf_pw && e.getKeyCode() == KeyEvent.VK_TAB) {
+			jtf_id.grabFocus();
 		}
 	}
 	@Override

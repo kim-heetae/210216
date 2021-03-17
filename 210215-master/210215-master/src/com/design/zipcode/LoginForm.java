@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import common.jdbc.MemberDao;
 public class LoginForm extends JFrame implements ActionListener {
 	String imgPath = "src\\com\\design\\zipcode\\";
 	ImageIcon ig 		= new ImageIcon(imgPath+"main.png");
@@ -70,6 +72,29 @@ public class LoginForm extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(jbtn_login==obj) {
+			MemberDao md = new MemberDao();
+			if("".equals(jtf_id.getText()) || "".equals(jtf_pw.getText())) {
+				JOptionPane.showMessageDialog(this, "아이디와 비번을 확인하세요");
+			}
+			try {
+				String msg = md.login(jtf_id.getText(), jtf_pw.getText());
+				if("비밀번호가 틀립니다.".equals(msg)) {
+					JOptionPane.showMessageDialog(this, msg);
+					jtf_pw.setText("");
+					return;
+				}
+				else if("아이디가 존재하지 않습니다.".equals(msg)) {
+					JOptionPane.showMessageDialog(this, msg);
+					jtf_id.setText("");
+					return;
+				}
+				else {
+					JOptionPane.showMessageDialog(this, msg + "님 환영합니다.", "info", JOptionPane.INFORMATION_MESSAGE);
+					this.setVisible(false);					
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 		}
 		
 	}

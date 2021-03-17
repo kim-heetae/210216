@@ -24,12 +24,12 @@ public class TalkClientThread extends Thread {
 					case Protocol.ROOM_IN:{
 						String nickname = st.nextToken();
 						tc.jta_display.append(nickname + "님이 입장하였습니다. \n");
-					}
+					};
 					case Protocol.MESSAGE:{
 						String nickname = st.nextToken();
 						String msg2 = st.nextToken();
 						tc.jta_display.append("[" + nickname + "]" + msg2 + "\n");	
-					}
+					};
 				}
 			} catch (Exception e) {
 				// TODO: handle exception

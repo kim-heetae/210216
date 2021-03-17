@@ -56,7 +56,7 @@ public class TalkClientVer2 extends JFrame implements ActionListener{
 			socket = new Socket("localhost", 5555);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
-			oos.writeObject(100 + " # " + nickname);
+			oos.writeObject(100 + "#" + nickname);
 			TalkClientThread tct = new TalkClientThread(this);
 			tct.start();
 		} catch (Exception e) {

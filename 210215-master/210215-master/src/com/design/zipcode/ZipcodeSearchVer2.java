@@ -1,5 +1,7 @@
 package com.design.zipcode;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -62,7 +64,7 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	String zdos[] = {"전체","서울","경기","강원"};
 	String zdos2[] = {"전체","부산","전남","대구"};
 	Vector<String> vzdos = new Vector<>();//vzdos.size()==>0
-	JComboBox jcb_zdo = new JComboBox(zdos);//West
+	JComboBox jcb_zdo = null;//West
 	JComboBox jcb_zdo2 = null;//West
 	JTextField jtf_search = new JTextField("동이름을 입력하세요.");//Center
 	JButton jbtn_search = new JButton("조회");//East
@@ -70,6 +72,7 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	String data[][] = new String[0][2];
 	DefaultTableModel dtm_zipcode = new DefaultTableModel(data,cols);
 	JTable jtb_zipcode = new JTable(dtm_zipcode);
+	//1-6은 다른 클래스의 인스턴스로 자신을 생성하기
 	JTableHeader jth = jtb_zipcode.getTableHeader();
 	JScrollPane jsp_zipcode = new JScrollPane(jtb_zipcode
 			,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
@@ -78,7 +81,8 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	MemberShip memberShip = null;
 	//생성자
 	public ZipcodeSearchVer2() {
-		zdos3 = getZdoList();
+		zdos3 = getZDOList();
+		jcb_zdo = new JComboBox(zdos3);
 	}
 	public ZipcodeSearchVer2(MemberShip memberShip) {
 		this();
@@ -86,6 +90,13 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	}
 	//화면처리부
 	public void initDisplay() {
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//		jth.setBackground(new Color(150,22,50));
+		jth.setBackground(Color.orange);		
+		jth.setFont(new Font("맑은고딕",Font.BOLD,20));
+		jtb_zipcode.setGridColor(Color.red);
+		jtb_zipcode.getColumnModel().getColumn(0).setPreferredWidth(100);
+		jtb_zipcode.getColumnModel().getColumn(1).setPreferredWidth(300);
 		jtb_zipcode.requestFocus();
 		jtb_zipcode.addMouseListener(this);
 		jbtn_search.addActionListener(this);
@@ -175,25 +186,52 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 		// TODO Auto-generated method stub
 		
 	}
-	public String[] getZdoList() {
-		try {
-		//원격에 있는 오라클 서버에 접속하기 위해 DBConnectionMgr객체 생성하기
-		} catch (Exception e) {
-			System.out.println("Exceptioin : "+e.toString());
-		}
-		return zdos;
-	}
 
 	public void refreshData(String zdo, String dong) {
 		System.out.println("zdo:"+zdo+", dong:"+dong);
-//	try {	
-//	} catch (SQLException se) {
-//			System.out.println(se.toString());
-//			System.out.println("[[query]]=="+sql.toString());
-//		} catch (Exception e) {
-//			System.out.println(e.toString());			
-//		}
-		
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT address, zipcode");
+		sql.append(" FROM zipcode_t");
+		sql.append(" WHERE 1 = 1");
+		if(zdo != null && zdo.length() > 0) {	
+			sql.append(" AND zdo = ?");
+		}		
+		if(dong != null && dong.length() > 0) {	
+			sql.append(" AND dong LIKE '%'||?||'%'");
+		}		
+		int i = 1;
+		try {
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sql.toString());
+			if(zdo != null && zdo.length() > 0) {	
+				pstmt.setString(i++, zdo);
+			}		
+			if(dong != null && dong.length() > 0) {	
+				pstmt.setString(i++, dong);
+			}		
+			rs = pstmt.executeQuery();
+			Vector<ZipcodeVO> v = new Vector<>();
+			ZipcodeVO[] zVOS = null;
+			ZipcodeVO zVO = null;
+			while(rs.next()) {
+				zVO = new ZipcodeVO();
+				zVO.setAddress(rs.getString("address"));
+				zVO.setZipcode(rs.getInt("zipcode"));
+				v.add(zVO);
+			}
+			zVOS = new ZipcodeVO[v.size()];
+			v.copyInto(zVOS);
+			if(v.size() > 0) {
+				while(dtm_zipcode.getRowCount() > 0) {
+					
+				}
+			}
+			//v2.copyInto(zdos);
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			
+		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -206,6 +244,16 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	public void itemStateChanged(ItemEvent e) {
 		Object obj = e.getSource();
 		if(obj == jcb_zdo2) {
+//			StringBuffer sql = new StringBuffer();
+//			sql.append("SELECT ");
+//			sql.append(" address, zipcode ");
+//			sql.append(" FROM zipcode_t");
+//			sql.append(" WHERE 1=1");
+//			sql.append(" AND zdo = :zdo");
+//			sql.append(" AND dong LIKE \'%\'||?||\'%\'");
+//			dbMgr = DBConnectionMgr.getInstance();
+//			con = dbMgr.getConnection();
+//			pstmt = con.prepareStatement(sql.toString());
 		}
 		
 	}

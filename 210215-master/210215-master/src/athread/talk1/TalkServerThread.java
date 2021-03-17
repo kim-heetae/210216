@@ -72,14 +72,14 @@ public class TalkServerThread extends Thread {
 							protocol = Integer.parseInt(st.nextToken());
 						}
 						switch(protocol) {
-						case 200:
-							String nickname = st.nextToken();
-							String msg2 = st.nextToken();
-							broadCasting(200 + "#" + nickname + "#" + msg2);
+							case 200:{
+								String nickname = st.nextToken();
+								String msg2 = st.nextToken();
+								broadCasting(200 + "#" + nickname + "#" + msg2);
+							}
 						}
 					} catch (Exception e) {
 						System.out.println("while inner" + e.toString());
-						
 //						System.exit(0);
 					}
 				}
