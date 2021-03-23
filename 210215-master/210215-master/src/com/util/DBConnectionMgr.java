@@ -60,6 +60,19 @@ public class DBConnectionMgr {
 			// TODO: handle exception
 		}
 	}
+	/*
+	 * 주의 : 사용한 자원은 반드시 명시적으로 반납할 것.
+	 * 오라클 서버로부터 세션을 종료 당함. 오라클 서버의 세션수가 정해져 있다. - DBA가 결정
+	 */
+	public void freeConnection(Connection con, CallableStatement cstmt, ResultSet rs) {
+		try {
+			if(rs != null) rs.close();
+			if(cstmt != null) cstmt.close();
+			if(con != null) con.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 	public void freeConnection(Connection con, CallableStatement cstmt) {
 		try {
 			if(cstmt != null) cstmt.close();

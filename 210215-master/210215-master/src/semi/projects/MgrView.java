@@ -31,6 +31,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.html.ListView;
 
 public class MgrView extends JFrame implements MouseListener ,KeyListener{
 	JTextArea 			jta 		= new JTextArea();
@@ -47,7 +48,7 @@ public class MgrView extends JFrame implements MouseListener ,KeyListener{
 	DefaultTableModel dtm_book = new DefaultTableModel(data, cols) 
 	{
 		public boolean isCellEditable(int rowindex, int mcolindex) {
-		return false;
+			return false;
 		}
 	};
 //	JTable jtb_book = new JTable(dtm_book);
