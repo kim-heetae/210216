@@ -11,10 +11,11 @@ public class ZipcodeVO {
 	String aptname  = null; 
 	String upd_date = null; 
 	String address  = null;
+	boolean chkBox;
 	public ZipcodeVO() {}
 	public ZipcodeVO(int uid_no, int zipcode
 			, String zdo, String sigu, String dong, String ri
-			, String bungi, String aptname, String upd_date, String address) {}
+			, String bungi, String aptname, String upd_date, String address, boolean chkBox) {}
 	public int getUid_no() {
 		return uid_no;
 	}
@@ -74,6 +75,12 @@ public class ZipcodeVO {
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public boolean isChkBox() {
+		return chkBox;
+	}
+	public void setChkBox(boolean chkBox) {
+		this.chkBox = chkBox;
 	}
 	
 }

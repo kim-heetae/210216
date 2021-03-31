@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,6 +31,7 @@ public class LoginForm extends JFrame implements ActionListener {
 					new ImageIcon(imgPath+"confirm.png"));
 //	TalkDao tDao = new TalkDao();
 	String 				nickName= null;//닉네임 등록
+	MemberShip ms = new MemberShip();
 	LoginForm(){
 		
 	}
@@ -43,6 +45,7 @@ public class LoginForm extends JFrame implements ActionListener {
 	}
 	public void initDisplay() {
 		jbtn_login.addActionListener(this);
+		jbtn_join.addActionListener(this);
 		this.setContentPane(new MyPanel());
 		this.setLayout(null);//디폴트 - BorderLayout
 		jlb_id.setBounds(45, 200, 80, 40);
@@ -71,7 +74,11 @@ public class LoginForm extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
-		if(jbtn_login==obj) {
+		if(jbtn_join == obj) {
+			ms.initDisplay();
+			this.dispose();
+		}
+		else if(jbtn_login==obj) {
 			MemberDao md = new MemberDao();
 			if("".equals(jtf_id.getText()) || "".equals(jtf_pw.getText())) {
 				JOptionPane.showMessageDialog(this, "아이디와 비번을 확인하세요");

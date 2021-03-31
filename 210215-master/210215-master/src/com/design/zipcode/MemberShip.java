@@ -37,9 +37,10 @@ public class MemberShip extends JDialog implements ActionListener{
 	JButton jbtn_ins = new JButton("등록");
 	JButton jbtn_close = new JButton("닫기");
 	ZipcodeSearch zcs = new ZipcodeSearch(this);
+	ZipcodeSearchVer2 zcs2 = null;
 	//생성자
 	public MemberShip(){
-		initDisplay();
+//		initDisplay();
 	}
 	//화면처리부
 	public void initDisplay() {
@@ -87,13 +88,14 @@ public class MemberShip extends JDialog implements ActionListener{
 		this.setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		new MemberShip();
-	}
+//	public static void main(String[] args) {
+//		new MemberShip();
+//	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == jbtn_zipcode) {
+			zcs2 = new ZipcodeSearchVer2();
 		}
 		
 	}

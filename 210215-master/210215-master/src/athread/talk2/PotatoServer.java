@@ -30,13 +30,14 @@ public class PotatoServer extends JFrame implements Runnable{
 	List<Room>  				roomList	= null;
 	ServerSocket 				server 		= null;
 	Socket 						socket 		= null;
-	JTextArea 					jta_log = new JTextArea(10,30);
-	JScrollPane 				jsp_log = new JScrollPane(jta_log
+	JTextArea 					jta_log 	= new JTextArea(10,30);
+	JScrollPane 				jsp_log 	= new JScrollPane(jta_log
 												,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
 		                                        ,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	JPanel 		jp_north = new JPanel();
 	JButton 	jbtn_log = new JButton("로그저장");
 	String      logPath  = "src\\athread\\talk2\\";
+	
 	
 	@Override
 	public void run() {
@@ -50,6 +51,7 @@ public class PotatoServer extends JFrame implements Runnable{
 				jta_log.append("client info:"+socket+"\n");				
 				PotatoServerThread pst = new PotatoServerThread(this);
 				pst.start();
+				System.out.println(globalList);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

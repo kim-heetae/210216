@@ -97,7 +97,6 @@ public class ZipcodeDao {
 	    	}
 	    } catch(SQLException se) {
 	    	System.out.println("[[query]]" + sql.toString());
-	    	System.out.println("[[SQLException]]" + se.toString());
 		} catch (Exception e) {
 			System.out.println("[[Exception]]" + e.toString());			
 		}

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace = "mybatis.mapper.ZipcodeMapper">
+	<select id="getSiguList" parameterType="com.design.zipcode.ZipcodeVO" resultType="java.lang.String">
+		SELECT '전체' sigu FROM dual      
+		UNION ALL                        
+		SELECT sigu                      
+		  FROM (                         
+		        SELECT distinct(sigu) sigu
+		          FROM zipcode_t         
+		         WHERE zdo=#{zdo}
+		        ORDER BY sigu asc
+		        )         
+	</select>
+	<select id="getDongList" parameterType="com.design.zipcode.ZipcodeVO" resultType="java.lang.String">
+		SELECT '전체' dong FROM dual      
+		UNION ALL                        
+		SELECT dong                      
+		  FROM (                         
+		        SELECT distinct(dong) dong
+		          FROM zipcode_t         
+		         WHERE sigu=#{sigu} AND dong != ' '
+		        ORDER BY dong asc
+		        )         
+	</select>
+	<select id = "getZDOList" parameterType = "java.util.Map" resultType = "java.util.Map">
+		SELECT '전체' zdo FROM dual
+		 UNION ALL
+		 SELECT zdo
+		 FROM(
+		 		SELECT DISTINCT(zdo) zdo
+		 			FROM zipcode_t
+		 			ORDER BY zdo
+		 )
+	</select>
+	<select id = "refreshData" parameterType = "com.design.zipcode.ZipcodeVO"  resultType = "com.design.zipcode.ZipcodeVO">
+		SELECT  'false' ChkBox, address, zipcode 
+			FROM zipcode_t 
+			 WHERE 1 = 1 
+		<if test="zdo != null and zdo.length() > 0">
+			AND zdo = #{zdo}
+		</if>
+		<if test="dong != null and dong.length() > 0">
+			AND dong LIKE '%'||#{dong}||'%'
+		</if>
+	</select>
+	<!-- <select id = "refreshData2" parameterType = "com.design.zipcode.ZipcodeVO" resultType = "com.design.zipcode.ZipcodeVO">
+		SELECT address, zipcode 
+			FROM zipcode_t 
+			 WHERE 1 = 1 
+		<if test="zdo != null and zdo.length() > 0">
+			AND zdo = #{zdo}
+		</if>
+		<if test="dong != null and dong.length() > 0">
+			AND dong LIKE '%'||#{dong}||'%'
+		</if>
+	</select> -->
+
+</mapper>

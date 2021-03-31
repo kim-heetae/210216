@@ -90,20 +90,85 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	//생성자
 	public ZipcodeSearchVer2() {
 		zdos3 = getZDOList();
-		sigus = getSIGUList();
-		dongs = getDONGList();
 		jcb_zdo = new JComboBox(zdos3);
 		jcb_sigu = new JComboBox(totals);
 		jcb_dong = new JComboBox(totals);
+		this.initDisplay();
 	}
-	private String[] getDONGList() {
-		// TODO Auto-generated method stub
-		return null;
+	////////////////////////////////////////[[시구 목록 & 동 목록]]//////////////////////////////
+	public String[] getSiguList(String pzdo) {
+		System.out.println("getSiguList 호출 성공");
+		//리턴타입을 1차 배열로 했으므로 1차배열 선언하기
+		String sigus[] = null;
+		//오라클 서버에게 보낼 select문 작성하기
+		//String은 원본이 바뀌지 않음.
+		StringBuilder sb = new StringBuilder();
+		//자바코드는 이클립스에서 디버깅하고 select문 토드에서 디버깅하기
+		sb.append("SELECT '전체' sigu FROM dual      ");
+		sb.append("UNION ALL                        ");
+		sb.append("SELECT sigu                       ");
+		sb.append("  FROM (                         ");
+		sb.append("        SELECT distinct(sigu) sigu ");
+		sb.append("          FROM zipcode_t         ");
+		sb.append("         WHERE zdo=?         ");
+		sb.append("        ORDER BY sigu asc         ");
+		sb.append("       )                         ");
+		try {
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sb.toString());
+			pstmt.setString(1,pzdo);
+			rs = pstmt.executeQuery();
+			Vector<String> v = new Vector<>();
+			while(rs.next()) {
+				String sigu = rs.getString("sigu");
+				v.add(sigu);
+			}
+			sigus = new String[v.size()];
+			v.copyInto(sigus);
+		} catch (Exception e) {
+			//stack영역에 관리되는 에러메시지 정보를 라인번호와 이력까지 출력해줌.			
+			e.printStackTrace();
+		}
+		return sigus;
 	}
-	private String[] getSIGUList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String[] getDongList(String psigu) {
+		System.out.println("getDongList 호출 성공");
+		//리턴타입을 1차 배열로 했으므로 1차배열 선언하기
+		String dongs[] = null;
+		//오라클 서버에게 보낼 select문 작성하기
+		//String은 원본이 바뀌지 않음.
+		StringBuilder sb = new StringBuilder();
+		//자바코드는 이클립스에서 디버깅하고 select문 토드에서 디버깅하기
+		sb.append("SELECT '전체' dong FROM dual      ");
+		sb.append("UNION ALL                        ");
+		sb.append("SELECT dong                       ");
+		sb.append("  FROM (                         ");
+		sb.append("        SELECT distinct(dong) dong ");
+		sb.append("          FROM zipcode_t         ");
+		sb.append("         WHERE sigu=?         ");
+		sb.append("         AND dong != ' '         ");
+		sb.append("        ORDER BY dong asc         ");
+		sb.append("       )                         ");
+		try {
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sb.toString());
+			pstmt.setString(1,psigu);
+			rs = pstmt.executeQuery();
+			Vector<String> v = new Vector<>();
+			while(rs.next()) {
+				String dong = rs.getString("dong");
+				v.add(dong);
+			}
+			dongs = new String[v.size()];
+			v.copyInto(dongs);
+		} catch (Exception e) {
+			//stack영역에 관리되는 에러메시지 정보를 라인번호와 이력까지 출력해줌.			
+			e.printStackTrace();
+		}
+		return dongs;
+	}	
+	////////////////////////////////////////[[시구 목록 & 동 목록 끝ㄴ]]//////////////////////////////
+	
 	public ZipcodeSearchVer2(MemberShip memberShip) {
 		this();
 		this.memberShip = memberShip;
@@ -122,6 +187,7 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 		jbtn_search.addActionListener(this);
 		jtf_search.addFocusListener(this);
 		jtf_search.addActionListener(this);
+		jtf_search.setSize(30, 30);
 		jp_north.setLayout(new FlowLayout());
 		for(String s:vzdos) {
 			System.out.println("s===>"+s);
@@ -185,11 +251,11 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 		return zdos;
 	}
 	//메인메소드
-	public static void main(String[] args) {
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		ZipcodeSearchVer2 zcs = new ZipcodeSearchVer2();
-		zcs.initDisplay();
-	}
+//	public static void main(String[] args) {
+//		JFrame.setDefaultLookAndFeelDecorated(true);
+//		ZipcodeSearchVer2 zcs = new ZipcodeSearchVer2();
+//		zcs.initDisplay();
+//	}
 	@Override
 	public void focusGained(FocusEvent e) {
 		System.out.println("focusGained 호출 성공");
@@ -204,27 +270,54 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 		
 	}
 
-	public void refreshData(String zdo, String dong) {
+	public void refreshData(String zdo, String dong, String sigu, String myDong) {
 		System.out.println("zdo:"+zdo+", dong:"+dong);
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT address, zipcode");
 		sql.append(" FROM zipcode_t");
 		sql.append(" WHERE 1 = 1");
-		if(zdo != null && zdo.length() > 0) {	
+		if(zdo != "전체" && zdo.length() > 0) {	
 			sql.append(" AND zdo = ?");
 		}		
-		if(dong != null && dong.length() > 0) {	
-			sql.append(" AND dong LIKE '%'||?||'%'");
-		}		
+		if(sigu != "전체" && sigu.length() > 0) {	
+			sql.append(" AND sigu = ?");
+		}	
+		if(dong != "전체" && dong.length() > 0) {	
+			sql.append(" AND dong = ?");
+		}
+		if(myDong != "상세주소를 입력하세요." && myDong.length() > 0) {	
+			sql.append(" AND address LIKE '%'||?||'%'");
+		}
 		int i = 1;
 		try {
 			con = dbMgr.getConnection();
 			pstmt = con.prepareStatement(sql.toString());
-			if(zdo != null && zdo.length() > 0) {	
-				pstmt.setString(i++, zdo);
+			if(zdo != null && zdo.length() > 0) {
+				if("전체".equals(zdo)) {
+					pstmt.setString(i++, "zdo");					
+				}
+				else {
+					pstmt.setString(i++, zdo);
+				}
+			}		
+			if(sigu != null && sigu.length() > 0) {	
+				if("전체".equals(sigu)) {
+					pstmt.setString(i++, "sigu");					
+				}
+				else {
+					pstmt.setString(i++, sigu);
+				}
 			}		
 			if(dong != null && dong.length() > 0) {	
-				pstmt.setString(i++, dong);
+				if("전체".equals(dong)) {
+					pstmt.setString(i++, "dong");					
+				}
+				else {
+					pstmt.setString(i++, dong);
+				}
+			}		
+			if(myDong != null && myDong.length() > 0) {	
+				pstmt.setString(i++, myDong);
 			}		
 			rs = pstmt.executeQuery();
 			Vector<ZipcodeVO> v = new Vector<>();
@@ -270,75 +363,104 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == jbtn_search || obj == jtf_search) {
-			String myDong = jtf_search.getText();
 			zdo = jcb_zdo.getSelectedItem().toString();
+			sigu = jcb_sigu.getSelectedItem().toString();
+			dong = jcb_dong.getSelectedItem().toString();
+			String myDong = null;
+			if("상세주소를 입력하세요.".equals(jtf_search.getText())) {				
+				myDong = "address";
+			}
+			else {				
+				myDong = jtf_search.getText();
+			}
 			System.out.println(zdo);
-			refreshData(zdo, myDong);
+			refreshData(zdo, dong, sigu, myDong);
 		}
 		
 	}
 	@Override
-	public void itemStateChanged(ItemEvent e) {
-		Object obj = e.getSource();
+	public void itemStateChanged(ItemEvent ie) {
+//		Object obj = ie.getSource().getClass();
+		Object obj = ie.getSource();
+//		if(obj == JComboBox.class) {
 		if(obj == jcb_zdo) {
-			if(e.getStateChange() == ItemEvent.SELECTED) {
+			if(ie.getStateChange() == ItemEvent.SELECTED) {
+				System.out.println("선택한 ZDO ===> "+zdos3[jcb_zdo.getSelectedIndex()]);
 				zdo = zdos3[jcb_zdo.getSelectedIndex()];
-				StringBuffer sql = new StringBuffer();
-				sql.append("select distinct(sigu) from zipcode_t where zdo = ?");
-				try {
-					dbMgr = DBConnectionMgr.getInstance();
-					con = dbMgr.getConnection();
-					pstmt = con.prepareStatement(sql.toString());
-					pstmt.setString(1, jcb_zdo.getSelectedItem().toString());
-					rs = pstmt.executeQuery();
-					int i = 0;
-					jcb_sigu.removeAllItems();
-					while(rs.next()) {
-						jcb_sigu.insertItemAt(rs.getString("sigu"), i++);
-					}
-				} catch (Exception e2) {
-					// TODO: handle exception
-				} finally {
-					dbMgr.freeConnection(con, pstmt, rs);
-				}
-				jcb_sigu.setSelectedIndex(0);
-			}
-//			StringBuffer sql = new StringBuffer();
-//			sql.append("SELECT ");
-//			sql.append(" address, zipcode ");
-//			sql.append(" FROM zipcode_t");
-//			sql.append(" WHERE 1=1");
-//			sql.append(" AND zdo = :zdo");
-//			sql.append(" AND dong LIKE \'%\'||?||\'%\'");
-//			dbMgr = DBConnectionMgr.getInstance();
-//			con = dbMgr.getConnection();
-//			pstmt = con.prepareStatement(sql.toString());
-		}
-		else if(obj == jcb_sigu){
-			if(e.getStateChange() == ItemEvent.SELECTED) {
-				StringBuffer sql = new StringBuffer();
-				sql.append("SELECT DISTINCT(DONG) "
-						+ "FROM ZIPCODE_T "
-						+ "WHERE ZDO = ? AND SIGU = ?");
-				try {
-					dbMgr = DBConnectionMgr.getInstance();
-					con = dbMgr.getConnection();
-					pstmt = con.prepareStatement(sql.toString());
-					pstmt.setString(1, jcb_zdo.getSelectedItem().toString());
-					pstmt.setString(2, jcb_sigu.getSelectedItem().toString());
-					rs = pstmt.executeQuery();
-					int i = 0;
-					jcb_dong.removeAllItems();
-					while(rs.next()) {
-						jcb_dong.insertItemAt(rs.getString("dong"), i++);
-					}
-				} catch (Exception e2) {
-					// TODO: handle exception
-				} finally {
-					dbMgr.freeConnection(con, pstmt, rs);
+				sigus = getSiguList(zdo);
+				jcb_sigu.removeAllItems();
+				for(int i=0;i<sigus.length;i++) {
+					jcb_sigu.addItem(sigus[i]);
 				}
 			}
 		}
+		if(obj == jcb_sigu) {
+			if(ie.getStateChange() == ItemEvent.SELECTED) {
+				System.out.println("선택한 SIGU ===> "+sigus[jcb_sigu.getSelectedIndex()]);
+				sigu = sigus[jcb_sigu.getSelectedIndex()];
+				dongs = getDongList(sigu);
+				jcb_dong.removeAllItems();
+				for(int i=0;i<dongs.length;i++) {
+					jcb_dong.addItem(dongs[i]);
+				}
+			}
+		}
+		if(obj == jcb_dong) {
+			if(ie.getStateChange() == ItemEvent.SELECTED) {
+				System.out.println("선택한 DONG ===> "+dongs[jcb_dong.getSelectedIndex()]);
+				dong = dongs[jcb_dong.getSelectedIndex()];
+			}
+		}
+
+//		if(obj == jcb_zdo) {
+//			if(e.getStateChange() == ItemEvent.SELECTED) {
+//				zdo = zdos3[jcb_zdo.getSelectedIndex()];
+//				StringBuffer sql = new StringBuffer();
+//				sql.append("select distinct(sigu) from zipcode_t where zdo = ?");
+//				try {
+//					dbMgr = DBConnectionMgr.getInstance();
+//					con = dbMgr.getConnection();
+//					pstmt = con.prepareStatement(sql.toString());
+//					pstmt.setString(1, jcb_zdo.getSelectedItem().toString());
+//					rs = pstmt.executeQuery();
+//					int i = 0;
+//					jcb_sigu.removeAllItems();
+//					while(rs.next()) {
+//						jcb_sigu.insertItemAt(rs.getString("sigu"), i++);
+//					}
+//				} catch (Exception e2) {
+//					// TODO: handle exception
+//				} finally {
+//					dbMgr.freeConnection(con, pstmt, rs);
+//				}
+//				jcb_sigu.setSelectedIndex(0);
+//			}
+//		}
+//		else if(obj == jcb_sigu){
+//			if(e.getStateChange() == ItemEvent.SELECTED) {
+//				StringBuffer sql = new StringBuffer();
+//				sql.append("SELECT DISTINCT(DONG) "
+//						+ "FROM ZIPCODE_T "
+//						+ "WHERE ZDO = ? AND SIGU = ?");
+//				try {
+//					dbMgr = DBConnectionMgr.getInstance();
+//					con = dbMgr.getConnection();
+//					pstmt = con.prepareStatement(sql.toString());
+//					pstmt.setString(1, jcb_zdo.getSelectedItem().toString());
+//					pstmt.setString(2, jcb_sigu.getSelectedItem().toString());
+//					rs = pstmt.executeQuery();
+//					int i = 0;
+//					jcb_dong.removeAllItems();
+//					while(rs.next()) {
+//						jcb_dong.insertItemAt(rs.getString("dong"), i++);
+//					}
+//				} catch (Exception e2) {
+//					// TODO: handle exception
+//				} finally {
+//					dbMgr.freeConnection(con, pstmt, rs);
+//				}
+//			}
+//		}
 		
 	}
 	@Override
