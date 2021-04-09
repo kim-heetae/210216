@@ -3,6 +3,9 @@ package athread.talk2;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+
 /*********************************************************************************************
  * 이벤트 핸들러의 역할은 말하기 이고
  * 클라이언트 측의 스레드의 역할은 듣기이다.
@@ -10,8 +13,8 @@ import java.util.Vector;
  *
  */
 public class PotatoClientThread extends Thread{
-	PotatoClient pc = null;
-	public PotatoClientThread(PotatoClient pc) {
+	PotatoClientVer2 pc = null;
+	public PotatoClientThread(PotatoClientVer2 pc) {
 		this.pc = pc;
 	}
 	@Override
@@ -28,32 +31,64 @@ public class PotatoClientThread extends Thread{
 					protocol = Integer.parseInt(st.nextToken());//100
 				}
 				switch(protocol) {
-					case 100:{//100#apple
+					case Protocol.ROOM_IN:{//100#apple
 						String nickName = st.nextToken();
-						pc.jta_display.append(nickName+"님이 입장하였습니다.\n");
+//						pc.jta_display.append(nickName+"님이 입장하였습니다.\n");
+						MutableAttributeSet attr = new SimpleAttributeSet();
+						try {
+							pc.sd_display.insertString(pc.sd_display.getLength(), nickName + "님이 입장하였습니다.\n", attr);
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
 						Vector<String> v = new Vector<>();
 						v.add(nickName);
 						pc.dtm.addRow(v);
 					}break;
-					case 200:{
-						
-					}break;
-					case 201:{
+					case Protocol.MESSAGE:{
 						String nickName = st.nextToken();
 						String message = st.nextToken();
-						pc.jta_display.append("["+nickName+"]"+message+"\n");
-						pc.jta_display.setCaretPosition
-						(pc.jta_display.getDocument().getLength());	
+						MutableAttributeSet attr = new SimpleAttributeSet();
+						try {
+							pc.sd_display.insertString(pc.sd_display.getLength(), "["+nickName+"]"+message+"\n", attr);
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+						pc.jtp_display.setCaretPosition
+						(pc.sd_display.getLength());	
 					}break;
-					case 202:{
-						
-					}break;
-					case 500:{
+					case Protocol.CHANGE:{
 						String nickName = st.nextToken();
-						pc.jta_display.append(nickName+"님이 퇴장 하였습니다.\n");
-						pc.jta_display.setCaretPosition
-						(pc.jta_display.getDocument().getLength());
-						for(int i=0;i<pc.dtm.getRowCount();i++) {
+						String afterName = st.nextToken();
+						String infomsg = st.nextToken();
+						for(int i = 0; i < pc.dtm.getRowCount(); i++) {
+							String currentName = (String)pc.dtm.getValueAt(i, 0);
+							if(currentName.equals(nickName)) {
+								pc.dtm.setValueAt(afterName, i, 0);
+								break;
+							}
+						}
+						MutableAttributeSet attr = new SimpleAttributeSet();
+						try {
+							pc.sd_display.insertString(pc.sd_display.getLength()
+									, infomsg
+									, attr);
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+						pc.jtp_display.setCaretPosition
+									(pc.sd_display.getLength());
+						if(nickName.equals(pc.nickName)) {
+							pc.setTitle(afterName);
+							pc.nickName = afterName;
+						}
+					}break;
+					case Protocol.ROOM_OUT:{
+						String nickName = st.nextToken();
+						MutableAttributeSet attr = new SimpleAttributeSet();
+						for(int i=0; i < pc.dtm.getRowCount(); i++) {
 							String n =(String)pc.dtm.getValueAt(i, 0);
 							if(n.equals(nickName)) {
 								pc.dtm.removeRow(i);

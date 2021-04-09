@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+<appenders>
+<!-- 콘솔 로그 설정 
+#Layout 사용하기
+#%m : 메세지 출력
+#%p : priority 출력
+#%r : 어플리케이션이 시작되어 로깅이벤트가 발생하는 시점까지의 경과시간을 밀리세컨드로 출력
+#%c : category 출력 
+#%n : 개행문자 출력
+#%d : 로깅이벤트가 일어나 날짜 출력 ( 프로그램의 실행속도를 느리게 한다.)
+# 예) %d{HH:mm:ss} 또는 %d{dd MMMM yyyy HH:mm:ss}
+#%C : 호출자의 클래스명 출력
+#%M : 호출자의 메소드 출력
+#%F : 호출자의 파일 이름 출력
+-->
+<Console name="console" target="SYSTEM_OUT">
+<!-- <PatternLayout pattern="%d [%t] %-5p %c - %m%n" /> -->
+<PatternLayout pattern="[%d] [%p] (%13F:%L) %3t - %m ⏱⏱⏱✔👀==> [%rms]%n" />
+</Console>
+<!-- 파일 로그 설정 -->
+<RollingFile name="file" fileName="C:\eGov20210408\spring_java\logs\all.log" filePattern="./logs/all.%i.%d{yyyy-MM-dd}.log">
+<!-- <PatternLayout pattern="%d [%t] %-5p %c - %m%n" /> -->
+<PatternLayout pattern="[%d] [%p] (%13F:%L) %3t - %m ==> [%rms]%n" />
+<Policies>
+<SizeBasedTriggeringPolicy size="10MB" />
+</Policies>
+<DefaultRolloverStrategy max="1000" fileIndex="min" />
+</RollingFile>
+</appenders>
+<!-- 로그 레벨 설정 -->
+<loggers>
+<root level="ALL">
+<appender-ref ref="console" />
+<appender-ref ref="file" />
+</root>
+</loggers>
+<typeAliases></typeAliases>
+</configuration>
+
+

@@ -180,12 +180,12 @@ public class SungJukAppUI extends JFrame implements ActionListener {
 				}
 			}
 		}
-//		for(int i=0;i<num;i++){
-//			if((String)dtm.getValueAt(i, 1) == null) {
-//				break;
-//			}
-//			dtm.setValueAt(String.valueOf(imsi[i][1]), i, 8);
-//		}
+		for(int i=0;i<num;i++){
+			if((String)dtm.getValueAt(i, 1) == null) {
+				break;
+			}
+			dtm.setValueAt(String.valueOf(imsi[i][1]), i, 7);
+		}
 	}
 	
 	@Override

@@ -48,9 +48,9 @@ public class PotatoServer extends JFrame implements Runnable{
 			jta_log.append("Server Ready.........\n");
 			while(!isStop) {
 				socket = server.accept();
-				jta_log.append("client info:"+socket+"\n");				
-				PotatoServerThread pst = new PotatoServerThread(this);
-				pst.start();
+				jta_log.append("client info:"+socket+"\n");//유저의 정보				
+				PotatoServerThread pst = new PotatoServerThread(this);//PST생성, 생성자 실행
+				pst.start();//PST의 run실행
 				System.out.println(globalList);
 			}
 		} catch (Exception e) {

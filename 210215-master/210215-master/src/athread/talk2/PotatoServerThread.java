@@ -5,6 +5,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+
 public class PotatoServerThread extends Thread {
 	PotatoServer ps = null;
 	Socket client = null;
@@ -17,31 +20,31 @@ public class PotatoServerThread extends Thread {
 		this.ps = ps;
 		this.client = ps.socket;
 		try {
-			oos = new ObjectOutputStream(client.getOutputStream());
-			ois = new ObjectInputStream(client.getInputStream());
-			
-			String msg = (String)ois.readObject();
-			ps.jta_log.append(msg+"\n");
-			StringTokenizer st = new StringTokenizer(msg,"#");
-			st.nextToken();//100
-			chatName = st.nextToken();
+			oos = new ObjectOutputStream(client.getOutputStream());//홀수소켓(말하기)
+			ois = new ObjectInputStream(client.getInputStream());//짝수소켓(듣기)
+			//130#은영[청취]
+			String msg = (String)ois.readObject();//듣기
+			ps.jta_log.append(msg+"\n");//서버출력
+			StringTokenizer st = new StringTokenizer(msg,"#");//자르기
+			st.nextToken();//130 추출
+			chatName = st.nextToken();//은영 추출
 			ps.jta_log.append(chatName+"님이 입장하였습니다.\n");
 			for(PotatoServerThread pst:ps.globalList) {
 			//이전에 입장해 있는 친구들 정보 받아내기
 				//String currentName = tst.chatName;
-				this.send(100+"#"+pst.chatName);
+				this.send(Protocol.ROOM_IN+"#"+pst.chatName);
 			}
 			//현재 서버에 입장한 클라이언트 스레드 추가하기
-			ps.globalList.add(this);
-			this.broadCasting(msg);
+			ps.globalList.add(this);//앞의 for문은 타지않고 은영이 globallist에 추가
+			this.broadCasting(msg);//방송 - 1명에게만 전송
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 	}//////////////////////////////////////////end of PotatoServerThread/////////////////////////////////////////
 	//현재 입장해 있는 친구들 모두에게 메시지 전송하기 구현
 		public void broadCasting(String msg) {
-			for(PotatoServerThread pst:ps.globalList) {
-				pst.send(msg);
+			for(PotatoServerThread pst:ps.globalList) {//globallist의 size() = 1 , 다른사람 추가 입장시 2
+				pst.send(msg);//은영한테만 보낸다. , 추가로 내가 들어가면 은영, 희태 모두 전송
 			}
 		}
 		//클라이언트에게 말하기 구현
@@ -72,12 +75,10 @@ public class PotatoServerThread extends Thread {
 						protocol = Integer.parseInt(st.nextToken());//100
 					}
 					switch(protocol) {
-						case 200:{
-						}break;
-						case 201:{
+						case Protocol.MESSAGE:{
 							String nickName = st.nextToken();
 							String message = st.nextToken();
-							broadCasting(201
+							broadCasting(Protocol.MESSAGE
 									+"#"+nickName
 									+"#"+message);
 						
@@ -85,13 +86,25 @@ public class PotatoServerThread extends Thread {
 						case 202:{
 						
 						}break;
-						case 500:{
+						case Protocol.CHANGE:{
+							String nickName = st.nextToken();
+							String afterName = st.nextToken();
+							String infomsg = st.nextToken();
+							this.chatName = afterName;//서버가 가지고있는 이름과 동기화
+							broadCasting(Protocol.CHANGE 
+										+ Protocol.seperator + nickName 
+										+ Protocol.seperator + afterName 
+										+ Protocol.seperator + infomsg);
+						}break;
+						case Protocol.ROOM_OUT:{
 							String nickName = st.nextToken();
 							ps.globalList.remove(this);
-							broadCasting(500
+							broadCasting(Protocol.ROOM_OUT
 									+"#"+nickName);
+							break run_start;
 //							ps.globalList.get(0).oos.writeObject(400);//////////////////////
-						}break run_start;
+//						}break run_start;
+						}
 					}/////////////end of switch
 				}/////////////////end of while			
 			} catch (Exception e) {

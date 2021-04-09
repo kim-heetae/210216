@@ -125,8 +125,8 @@ public class PotatoClient extends JFrame implements ActionListener{
 			//PotatoServerThread의 생성자가 듣기를 시작하는 지점
 			//서버에 말을 한 후 들을 준비를 한다. - 대기 - 듣기 - 프로토콜을 비교해야 한다.
 			//프로토콜 설계하기  - ERD 그린다. - 데이터 클래스 설계 - List, Map 단위테스트 
-			PotatoClientThread pct = new PotatoClientThread(this);
-			pct.start();
+//			PotatoClientThread pct = new PotatoClientThread(this);
+//			pct.start();
 		} catch (Exception e) {
 			//예외가 발생했을 때 직접적인 원인되는 클래스명 출력하기
 			System.out.println(e.toString());
@@ -150,7 +150,7 @@ public class PotatoClient extends JFrame implements ActionListener{
 			}
 		} else if (jbtn_exit == obj) {
 			try {
-				oos.writeObject(500+"#"+this.nickName);
+				oos.writeObject(Protocol.ROOM_OUT+"#"+this.nickName);
 				//자바가상머신과 연결고리 끊기
 				System.exit(0);
 			} catch (Exception e) {
