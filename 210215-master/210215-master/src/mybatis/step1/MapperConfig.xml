@@ -9,7 +9,7 @@
 			<dataSource type="POOLED">
 				<property name="driver" value="oracle.jdbc.driver.OracleDriver" />
 				<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl11" />
-				<property name="username" value="hit" 
+				<property name="username" value="scott" 
 				/>
 				<property name="password" value="tiger" />
 			</dataSource>
@@ -18,5 +18,6 @@
 	<mappers>
 		<mapper resource="mybatis/mapper/book.xml" />
 		<mapper resource="mybatis/mapper/zipcode.xml" />
+		<mapper resource="mvc/address/mkAddrtb.xml" />
 	</mappers>
 </configuration>
