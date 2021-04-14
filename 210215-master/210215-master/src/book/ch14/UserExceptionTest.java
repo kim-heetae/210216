@@ -2,6 +2,7 @@ package book.ch14;
 /*
  * API를 보는 습관을 들이자
  * 1일 1커밋 하는 습관을 만들자
+ * 이번 프로젝트에서 사용자 예외 처리를 해볼것.
  */
 public class UserExceptionTest {
 	public void test(String[] a) throws UserException{
