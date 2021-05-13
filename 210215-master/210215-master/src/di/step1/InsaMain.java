@@ -9,7 +9,9 @@ public class InsaMain {
 		ApplicationContext context = 
 				new ClassPathXmlApplicationContext
 									("di\\step1\\insaBean.xml");
-		InsaList insaList = (InsaList)context.getBean("insa");
+		InsaList insaList = (InsaList)context.getBean("insa"/*해당bean의 id값*/);
+		InsaMap mapBean = (InsaMap)context.getBean("insaMap"/*해당bean의 id값*/);
+		System.out.println("mapBean : " + mapBean);
 		System.out.println(insaList);
 		System.out.println(insaList.insaBean);
 		for(String s : insaList.insaBean) {

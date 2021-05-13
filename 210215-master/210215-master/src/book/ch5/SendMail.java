@@ -15,7 +15,7 @@ public class SendMail {
 	public static void main(String[] args) {
 		String smtpServer = "smtp.naver.com";
 		final String sendId = "rlaxo96";
-		final String sendPass = "rlaxo74rlaxo";
+		final String sendPass = "비밀번호";
 		String sendEmailAddress = "rlaxo96@naver.com";
 		int smtpPort=465;
 		
