@@ -251,11 +251,11 @@ public class ZipcodeSearchVer2 extends JFrame implements MouseListener
 		return zdos;
 	}
 	//메인메소드
-//	public static void main(String[] args) {
-//		JFrame.setDefaultLookAndFeelDecorated(true);
-//		ZipcodeSearchVer2 zcs = new ZipcodeSearchVer2();
-//		zcs.initDisplay();
-//	}
+	public static void main(String[] args) {
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		ZipcodeSearchVer2 zcs = new ZipcodeSearchVer2();
+		zcs.initDisplay();
+	}
 	@Override
 	public void focusGained(FocusEvent e) {
 		System.out.println("focusGained 호출 성공");

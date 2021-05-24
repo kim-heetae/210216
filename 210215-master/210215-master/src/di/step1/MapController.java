@@ -2,9 +2,6 @@ package di.step1;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.HttpServletBean;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,11 +17,11 @@ public class MapController {
 	public void setMapBean(Map<String, String> mapBean) {
 		this.mapBean = mapBean;
 	}
-	public ModelAndView handleRequestInternal(HttpServletRequest req
-											, HttpServletResponse res) 
-	{
-		System.out.println(mapBean.get("proc1"));
-		ModelAndView mav = new ModelAndView();
-		return mav;
-	}
+//	public ModelAndView handleRequestInternal(HttpServlettRequest req
+//											, HttpServletResponse res) 
+//	{
+//		System.out.println(mapBean.get("proc1"));
+//		ModelAndView mav = new ModelAndView();
+//		return mav;
+//	}
 }

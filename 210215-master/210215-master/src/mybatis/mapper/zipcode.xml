@@ -34,7 +34,7 @@
 		 )
 	</select>
 	<select id = "refreshData" parameterType = "com.design.zipcode.ZipcodeVO"  resultType = "com.design.zipcode.ZipcodeVO">
-		SELECT  'false' ChkBox, address, zipcode 
+		SELECT  'false' chkBox, address, zipcode 
 			FROM zipcode_t 
 			 WHERE 1 = 1 
 		<if test="zdo != null and zdo.length() > 0">
